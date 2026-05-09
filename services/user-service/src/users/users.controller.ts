@@ -17,35 +17,35 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): UserResponseDto {
-    const user = this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    const user = await this.usersService.create(createUserDto);
     return this.formatUserResponse(user);
   }
 
   @Get()
-  findAll(): UserResponseDto[] {
-    const users = this.usersService.findAll();
+  async findAll(): Promise<UserResponseDto[]> {
+    const users = await this.usersService.findAll();
     return users.map((user) => this.formatUserResponse(user));
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): UserResponseDto {
-    const user = this.usersService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<UserResponseDto> {
+    const user = await this.usersService.findOne(id);
     return this.formatUserResponse(user);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): UserResponseDto {
-    const user = this.usersService.update(id, updateUserDto);
+  ): Promise<UserResponseDto> {
+    const user = await this.usersService.update(id, updateUserDto);
     return this.formatUserResponse(user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): UserResponseDto {
-    const user = this.usersService.remove(id);
+  async remove(@Param('id') id: string): Promise<UserResponseDto> {
+    const user = await this.usersService.remove(id);
     return this.formatUserResponse(user);
   }
 

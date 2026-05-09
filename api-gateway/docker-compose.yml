@@ -5,18 +5,17 @@ services:
     image: postgres:16-alpine
     container_name: api_gateway_postgres
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: api_gateway_db
+      POSTGRES_USER: api_gateway
+      POSTGRES_PASSWORD: api_gateway_password
     ports:
-      - "${DB_PORT}:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U api_gateway"]
       interval: 10s
       timeout: 5s
       retries: 5
-
 volumes:
   postgres_data:
