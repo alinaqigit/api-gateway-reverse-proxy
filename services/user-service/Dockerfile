@@ -1,7 +1,0 @@
-FROM postgres:16-alpine
-
-ENV POSTGRES_DB=user_service
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=postgres
-
-EXPOSE 5432
