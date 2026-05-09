@@ -3,10 +3,24 @@ package internal
 import (
 	controlplane "api-gateway/internal/controlplane"
 	dataplane "api-gateway/internal/dataplane"
+	"database/sql"
 	"net/http"
+	_ "github.com/lib/pq"
 )
 
-func GetServer(env string) *http.ServeMux {
+type ServerParams struct {
+	Env      string
+	DBString string
+	JWTSecret string
+}
+
+func GetServer(params ServerParams) *http.ServeMux {
+
+	// Initialize database connection here and pass it to control plane modules
+	conn, err := sql.Open("postgres", params.DBString)
+	if err != nil {
+		panic("Failed to connect to database: " + err.Error())
+	}
 
 	// --- Root mux ---
 	mux := http.NewServeMux()
@@ -14,10 +28,11 @@ func GetServer(env string) *http.ServeMux {
 	// Specific route first
 	mux.Handle(
 		"/v1/admin/",
-		http.StripPrefix(
-			"/v1/admin",
-			controlplane.GetAdminRouter(env),
-		),
+		controlplane.GetAdminRouter(controlplane.AdminRouterParams{
+			CONN:      conn,
+			ENV:       params.Env,
+			JWTSECRET: params.JWTSecret,
+		}),
 	)
 
 	// General route after
