@@ -1,4 +1,4 @@
-package internal
+package server
 
 import (
 	controlplane "api-gateway/internal/controlplane"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"api-gateway/internal"
+	"api-gateway/internal/server"
 	"fmt"
 
 	"net/http"
@@ -27,7 +27,7 @@ func main() {
 	fmt.Printf("Hostname: %s, Listen Port: %s, Environment: %s\n", hostname, listenPort, env)
 
 	// Get the main server mux
-	server := internal.GetServer(internal.ServerParams{
+	server := server.GetServer(server.ServerParams{
 		Env:      env,
 		DBString: dbString,
 		JWTSecret: JWTSecret,

@@ -70,6 +70,7 @@ usage() {
     echo "  API_GATEWAY_TARGET_URL   Target URL to proxy to (e.g., http://localhost:8080)"
     echo "  API_GATEWAY_LISTEN_PORT  Port to listen on (e.g., 3000)"
     echo "  API_GATEWAY_DATABASE_URL PostgreSQL connection URL (e.g., postgresql://user:pass@localhost:5432/dbname)"
+    echo "  API_GATEWAY_JWT_SECRET   JWT signing secret for admin auth"
     echo "  GOOSE_DRIVER             Database driver for migrations (e.g., postgres)"
     echo "  GOOSE_DBSTRING           Database connection string for Goose (e.g., postgresql://user:pass@localhost/dbname)"
     echo "  GOOSE_MIGRATION_DIR      Path to migration files directory (e.g., migrations)"
@@ -177,12 +178,13 @@ case $choice in
         fi
         
         # Validate the API Gateway environment variables 
-        if [ -z "$API_GATEWAY_HOSTNAME" ] || [ -z "$API_GATEWAY_TARGET_URL" ] || [ -z "$API_GATEWAY_LISTEN_PORT" ] || [ -z "$API_GATEWAY_DATABASE_URL" ] || [ -z "$GOOSE_DRIVER" ] || [ -z "$GOOSE_DBSTRING" ] || [ -z "$GOOSE_MIGRATION_DIR" ]; then
+        if [ -z "$API_GATEWAY_HOSTNAME" ] || [ -z "$API_GATEWAY_TARGET_URL" ] || [ -z "$API_GATEWAY_LISTEN_PORT" ] || [ -z "$API_GATEWAY_DATABASE_URL" ] || [ -z "$API_GATEWAY_JWT_SECRET" ] || [ -z "$GOOSE_DRIVER" ] || [ -z "$GOOSE_DBSTRING" ] || [ -z "$GOOSE_MIGRATION_DIR" ]; then
             print_error "Missing required environment variables:"
             echo "  - API_GATEWAY_HOSTNAME"
             echo "  - API_GATEWAY_TARGET_URL"
             echo "  - API_GATEWAY_LISTEN_PORT"
             echo "  - API_GATEWAY_DATABASE_URL"
+            echo "  - API_GATEWAY_JWT_SECRET"
             echo "  - GOOSE_DRIVER"
             echo "  - GOOSE_DBSTRING"
             echo "  - GOOSE_MIGRATION_DIR"
@@ -220,12 +222,13 @@ case $choice in
         echo "  🔗 Listen Address  : ${BOLD}$API_GATEWAY_HOSTNAME:$API_GATEWAY_LISTEN_PORT${NC}"
         echo "  📦 Target URL      : ${BOLD}$API_GATEWAY_TARGET_URL${NC}"
         echo "  💾 Database URL    : ${BOLD}$API_GATEWAY_DATABASE_URL${NC}"
+        echo "  🔐 JWT Secret      : ${BOLD}set${NC}"
         echo "  🔄 Goose Driver    : ${BOLD}$GOOSE_DRIVER${NC}"
         echo "  📂 Migration Dir   : ${BOLD}$GOOSE_MIGRATION_DIR${NC}"
         echo "  ⚙️  Environment    : ${BOLD}$ENV${NC}"
         echo ""
         
-        export ENV API_GATEWAY_HOSTNAME API_GATEWAY_TARGET_URL API_GATEWAY_LISTEN_PORT API_GATEWAY_DATABASE_URL GOOSE_DRIVER GOOSE_DBSTRING GOOSE_MIGRATION_DIR
+        export ENV API_GATEWAY_HOSTNAME API_GATEWAY_TARGET_URL API_GATEWAY_LISTEN_PORT API_GATEWAY_DATABASE_URL API_GATEWAY_JWT_SECRET GOOSE_DRIVER GOOSE_DBSTRING GOOSE_MIGRATION_DIR
 
         # Check if env is dev or prod and start the api gateway accordingly
         if [ "$ENV" == "dev" ]; then
@@ -303,6 +306,7 @@ case $choice in
         fi
         ;;
     3)
+        export USER_SERVICE_DB_URL
         print_header "⚙️  INITIALIZING PROJECT"
         echo "${BOLD}Which project do you want to initialize?${NC}"
         echo ""
